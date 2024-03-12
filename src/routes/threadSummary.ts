@@ -9,7 +9,7 @@ dotenv.config();
 const router = express.Router();
 const NEYNAR_API_KEY = process.env.NEYNAR_API;
 const openai = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['OPENAI_API_KEY'],
 });
 
 interface Author {
