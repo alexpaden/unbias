@@ -6,10 +6,6 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-console.log("DB User:", process.env.DEV_DB_USER);  // Add this for debugging
-console.log("DB Password:", process.env.DEV_DB_PASSWORD);  // Add this for debugging
-
-
 const pool = new Pool({
   user: isProduction ? process.env.PROD_DB_USER : process.env.DEV_DB_USER,
   password: String(isProduction ? process.env.PROD_DB_PASSWORD : process.env.DEV_DB_PASSWORD),
