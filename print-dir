@@ -1,0 +1,6 @@
+Windows:
+Get-ChildItem -Path . -Recurse -Exclude 'node_modules' | Where-Object { $_.FullName -notmatch '\\node_modules\\' } | Select-Object FullName
+
+
+Linux:
+find . -type d -name 'node_modules' -prune -o -type f -print
