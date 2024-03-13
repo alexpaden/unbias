@@ -26,8 +26,13 @@ interface Cast {
 
 router.get('/', async (req, res) => {
     const threadHash = req.query.hash as string;
-    const summaryLength = req.query.length as string;
-    const refresh = req.query.refresh === 'true';
+    let summaryLength = req.query.length as string;
+    let refresh = req.query.refresh === 'true' || false; // Default to false if not 'true'
+
+    // Set default value for 'length' if null
+    if (!summaryLength) {
+        summaryLength = '0'; // Default to '0'
+    }
 
     if (!threadHash) {
         return res.status(400).send('Thread hash is required');
@@ -41,6 +46,10 @@ router.get('/', async (req, res) => {
             summary = existingSummary.openai_response;
         } else {
             const threadData = await fetchThreadData(threadHash);
+            // Check if the response from Neynar API is valid
+            if (!threadData || !threadData.result || !Array.isArray(threadData.result.casts)) {
+                return res.status(400).send('Invalid thread hash or unexpected response from Neynar API');
+            }
             const formattedThreads = formatThreads(threadData.result.casts);
             summary = await getThreadSummary(formattedThreads, summaryLength);
 
@@ -99,8 +108,8 @@ async function getThreadSummary(threadData: string[], length: string): Promise<s
             break;
     }
 
-    const prompt = `Your job is to summarize social media threads into a ${summaryLength} context which includes the original post topic, the direction of conversation, and the major user participation toward any particular direction.\n\nPlease summarize this thread in a ${summaryLength} form:\n\`\`\`${threadData.join('\n')}\`\`\``;
-
+    //const prompt = `Your job is to summarize social media threads into a ${summaryLength} context which includes the original post topic, the direction of conversation, and the major user participation toward any particular direction.\n\nPlease summarize this thread in a ${summaryLength} form:\n\`\`\`${threadData.join('\n')}\`\`\``;
+    const prompt = `Your job is to summarize this entire thing ${threadData.join('\n')} laconically mentioning important strains of the conversation and factions of users. Please target a ${summaryLength} summary.`;
     try {
           const chatCompletion = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
