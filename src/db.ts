@@ -8,10 +8,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const pool = new Pool({
   user: isProduction ? process.env.PROD_DB_USER : process.env.DEV_DB_USER,
-  password: String(isProduction ? process.env.PROD_DB_PASSWORD : process.env.DEV_DB_PASSWORD),
+  password: isProduction ? process.env.PROD_DB_PASSWORD : process.env.DEV_DB_PASSWORD,
   host: isProduction ? process.env.PROD_DB_HOST : process.env.DEV_DB_HOST,
   database: isProduction ? process.env.PROD_DB_DATABASE : process.env.DEV_DB_DATABASE,
-  port: parseInt(isProduction ? (process.env.PROD_DB_PORT || '5432') : (process.env.DEV_DB_PORT || '5433'), 10),
+  port: parseInt(isProduction ? process.env.PROD_DB_PORT || '5432' : process.env.DEV_DB_PORT || '5433', 10),
   ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
